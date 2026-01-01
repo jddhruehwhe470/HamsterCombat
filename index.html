@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamster Kombat Copy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: linear-gradient(145deg, #1a1a1a, #222222);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #FFA500;
+            text-shadow: 0 2px 5px rgba(255, 165, 0, 0.3);
+            margin-bottom: 5px;
+        }
+        
+        .header .url {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .stats {
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFA500;
+        }
+        
+        .click-area {
+            position: relative;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #333;
+        }
+        
+        .click-area:active {
+            transform: scale(0.98);
+        }
+        
+        .coin-icon {
+            font-size: 70px;
+            color: #FFA500;
+            margin-bottom: 15px;
+            text-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+        }
+        
+        .coin-count {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .click-profit {
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        .upgrade-section {
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #1a1a1a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF8C00, #FFA500);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        
+        .upgrade-button {
+            width: 100%;
+            background: linear-gradient(145deg, #FF8C00, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 10px rgba(255, 140, 0, 0.3);
+        }
+        
+        .upgrade-button:hover {
+            background: linear-gradient(145deg, #FFA500, #FF8C00);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 12px rgba(255, 140, 0, 0.4);
+        }
+        
+        .upgrade-button:active {
+            transform: translateY(0);
+        }
+        
+        .upgrade-button:disabled {
+            background: #555;
+            color: #aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Анимация клика */
+        .click-animation {
+            position: absolute;
+            pointer-events: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF8C00;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+            animation: floatUp 1s ease-out forwards;
+            z-index: 10;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) scale(1.5);
+            }
+        }
+        
+        /* Энергия - невидимый элемент */
+        .energy-info {
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .save-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 168, 255, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .save-notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .click-area {
+                padding: 30px 15px;
+                min-height: 180px;
+            }
+            
+            .coin-icon {
+                font-size: 60px;
+            }
+            
+            .coin-count {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hamster Kombat Copy</h1>
+            <div class="url">robertsergeev.github.io/hamster-kombat-copy</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-row">
+                <div class="stat-label">Прибыль за тап</div>
+                <div class="stat-value">+<span id="profit-per-tap">1</span></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">Монет для апа</div>
+                <div class="stat-value"><span id="upgrade-cost">1000</span></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">Прибыль в час</div>
+                <div class="stat-value">+<span id="profit-per-hour">3600</span></div>
+            </div>
+        </div>
+        
+        <div class="click-area" id="click-area">
+            <div class="coin-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="coin-count" id="coin-count">0</div>
+            <div class="click-profit">+<span id="click-profit-value">1</span> за клик</div>
+        </div>
+        
+        <div class="upgrade-section">
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span id="current-progress">0</span>/<span id="max-progress">1000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <button class="upgrade-button" id="upgrade-button">Upgrade</button>
+        </div>
+        
+        <!-- Скрытая информация об энергии -->
+        <div class="energy-info">
+            Энергия: <span id="energy-value">1000</span>/1000
+        </div>
+        
+        <footer>
+            Точная копия интерфейса Hamster Kombat с анимацией кликов
+        </footer>
+    </div>
+    
+    <div class="save-notification" id="save-notification">Прогресс сохранен!</div>
+
+    <script>
+        // Система сохранения данных
+        const SAVE_KEY = 'hamster_kombat_save';
+        
+        // Функция сохранения данных
+        function saveGame() {
+            const gameData = {
+                coins: coins,
+                profitPerTap: profitPerTap,
+                profitPerHour: profitPerHour,
+                upgradeCost: upgradeCost,
+                energy: currentEnergy,
+                lastSaveTime: Date.now()
+            };
+            
+            localStorage.setItem(SAVE_KEY, JSON.stringify(gameData));
+            
+            // Показать уведомление о сохранении
+            const notification = document.getElementById('save-notification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 1500);
+        }
+        
+        // Функция загрузки данных
+        function loadGame() {
+            const savedData = localStorage.getItem(SAVE_KEY);
+            
+            if (savedData) {
+                const gameData = JSON.parse(savedData);
+                
+                // Восстанавливаем данные
+                coins = gameData.coins || 0;
+                profitPerTap = gameData.profitPerTap || 1;
+                profitPerHour = gameData.profitPerHour || 3600;
+                upgradeCost = gameData.upgradeCost || 1000;
+                currentEnergy = gameData.energy || MAX_ENERGY;
+                
+                // Рассчитываем восстановление энергии за время отсутствия
+                if (gameData.lastSaveTime) {
+                    const timePassed = Math.floor((Date.now() - gameData.lastSaveTime) / 1000);
+                    const energyToRegen = Math.floor(timePassed * ENERGY_REGEN_RATE);
+                    
+                    currentEnergy = Math.min(MAX_ENERGY, currentEnergy + energyToRegen);
+                }
+                
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Инициализация переменных
+        let coins = 0;
+        let profitPerTap = 1;
+        let profitPerHour = 3600;
+        let upgradeCost = 1000;
+        
+        // Система энергии
+        const MAX_ENERGY = 1000;
+        const ENERGY_REGEN_RATE = 1; // 1 энергия в секунду
+        let currentEnergy = MAX_ENERGY;
+        let lastEnergyUpdate = Date.now();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Пытаемся загрузить сохраненную игру
+            const hasSave = loadGame();
+            
+            // Получение элементов DOM
+            const coinCountElement = document.getElementById('coin-count');
+            const profitPerTapElement = document.getElementById('profit-per-tap');
+            const profitPerHourElement = document.getElementById('profit-per-hour');
+            const upgradeCostElement = document.getElementById('upgrade-cost');
+            const clickProfitValueElement = document.getElementById('click-profit-value');
+            const currentProgressElement = document.getElementById('current-progress');
+            const maxProgressElement = document.getElementById('max-progress');
+            const progressFillElement = document.getElementById('progress-fill');
+            const upgradeButton = document.getElementById('upgrade-button');
+            const clickArea = document.getElementById('click-area');
+            const energyValueElement = document.getElementById('energy-value');
+            
+            // Обновление интерфейса
+            function updateUI() {
+                // Обновляем основной баланс
+                coinCountElement.textContent = coins;
+                profitPerTapElement.textContent = profitPerTap;
+                profitPerHourElement.textContent = profitPerHour;
+                upgradeCostElement.textContent = upgradeCost;
+                clickProfitValueElement.textContent = profitPerTap;
+                
+                // Обновляем прогресс бар - показывает текущий баланс
+                currentProgressElement.textContent = coins;
+                maxProgressElement.textContent = upgradeCost;
+                
+                // Рассчитываем процент заполнения прогресс бара
+                // Если баланс больше стоимости улучшения, показываем 100%
+                const progressPercent = Math.min(100, (coins / upgradeCost) * 100);
+                progressFillElement.style.width = `${progressPercent}%`;
+                
+                // Обновление энергии (скрыто)
+                energyValueElement.textContent = currentEnergy;
+                
+                // Проверка, достаточно ли монет для улучшения
+                if (coins >= upgradeCost) {
+                    upgradeButton.disabled = false;
+                } else {
+                    upgradeButton.disabled = true;
+                }
+            }
+            
+            // Функция восстановления энергии
+            function regenerateEnergy() {
+                const now = Date.now();
+                const timePassed = (now - lastEnergyUpdate) / 1000;
+                
+                if (timePassed >= 1) {
+                    const energyToAdd = Math.floor(timePassed * ENERGY_REGEN_RATE);
+                    currentEnergy = Math.min(MAX_ENERGY, currentEnergy + energyToAdd);
+                    lastEnergyUpdate = now;
+                    
+                    // Обновляем скрытое значение энергии
+                    energyValueElement.textContent = currentEnergy;
+                }
+                
+                requestAnimationFrame(regenerateEnergy);
+            }
+            
+            // Запускаем восстановление энергии
+            regenerateEnergy();
+            
+            // Обработка клика по области для сбора монет
+            clickArea.addEventListener('click', function(e) {
+                // Проверяем, есть ли энергия
+                if (currentEnergy <= 0) {
+                    // Визуальная обратная связь при отсутствии энергии
+                    clickArea.style.boxShadow = "0 5px 15px rgba(255, 71, 87, 0.5)";
+                    setTimeout(() => {
+                        clickArea.style.boxShadow = "0 5px 15px rgba(0, 0, 0, 0.5)";
+                    }, 300);
+                    return;
+                }
+                
+                // Тратим энергию
+                currentEnergy = Math.max(0, currentEnergy - 1);
+                
+                // Добавляем монеты
+                coins += profitPerTap;
+                
+                // Создание анимации клика
+                const clickAnimation = document.createElement('div');
+                clickAnimation.classList.add('click-animation');
+                clickAnimation.textContent = `+${profitPerTap}`;
+                
+                // Позиционирование анимации в месте клика
+                const rect = clickArea.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                clickAnimation.style.left = `${x}px`;
+                clickAnimation.style.top = `${y}px`;
+                
+                clickArea.appendChild(clickAnimation);
+                
+                // Удаление анимации после завершения
+                setTimeout(() => {
+                    clickAnimation.remove();
+                }, 1000);
+                
+                // Обновление интерфейса
+                updateUI();
+                
+                // Сохраняем после каждого клика
+                saveGame();
+            });
+            
+            // Обработка улучшения
+            upgradeButton.addEventListener('click', function() {
+                if (coins >= upgradeCost) {
+                    // Вычитаем стоимость улучшения
+                    coins -= upgradeCost;
+                    
+                    // Увеличиваем прибыль за тап
+                    profitPerTap += 1;
+                    
+                    // Увеличиваем прибыль в час
+                    profitPerHour += 100;
+                    
+                    // Увеличиваем стоимость следующего улучшения
+                    upgradeCost = Math.floor(upgradeCost * 1.5);
+                    
+                    // Обновляем интерфейс
+                    updateUI();
+                    
+                    // Визуальная обратная связь для кнопки улучшения
+                    upgradeButton.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        upgradeButton.style.transform = 'scale(1)';
+                    }, 150);
+                    
+                    // Сохраняем после улучшения
+                    saveGame();
+                }
+            });
+            
+            // Автоматический доход (каждую секунду имитация дохода в час)
+            setInterval(() => {
+                // Добавляем 1/3600 часть от прибыли в час каждую секунду
+                coins += Math.floor(profitPerHour / 3600);
+                updateUI();
+            }, 1000);
+            
+            // Авто-сохранение каждые 30 секунд
+            setInterval(() => {
+                saveGame();
+            }, 30000);
+            
+            // Сохраняем при закрытии вкладки
+            window.addEventListener('beforeunload', saveGame);
+            
+            // Инициализация интерфейса
+            updateUI();
+            
+            // Показываем сообщение о загрузке сохранения
+            if (hasSave) {
+                const notification = document.getElementById('save-notification');
+                notification.textContent = "Прогресс загружен!";
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+  </html>
