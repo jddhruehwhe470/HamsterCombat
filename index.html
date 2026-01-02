@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamster Kombat Copy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: linear-gradient(145deg, #1a1a1a, #222222);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #FFA500;
+            text-shadow: 0 2px 5px rgba(255, 165, 0, 0.3);
+            margin-bottom: 5px;
+        }
+        
+        .header .url {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .stats {
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFA500;
+        }
+        
+        .click-area {
+            position: relative;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #333;
+            transition: all 0.3s;
+        }
+        
+        .click-area:active {
+            transform: scale(0.98);
+        }
+        
+        .click-area.critical {
+            animation: criticalGlow 0.5s;
+        }
+        
+        @keyframes criticalGlow {
+            0%, 100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); }
+            50% { box-shadow: 0 5px 25px rgba(255, 0, 0, 0.7); }
+        }
+        
+        .coin-icon {
+            font-size: 70px;
+            color: #FFA500;
+            margin-bottom: 15px;
+            text-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+            transition: transform 0.3s;
+        }
+        
+        .coin-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .coin-count {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .click-profit {
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        .upgrade-section {
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #1a1a1a;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF8C00, #FFA500);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .upgrade-button {
+            width: 100%;
+            background: linear-gradient(145deg, #FF8C00, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 10px rgba(255, 140, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upgrade-button:hover {
+            background: linear-gradient(145deg, #FFA500, #FF8C00);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 12px rgba(255, 140, 0, 0.4);
+        }
+        
+        .upgrade-button:active {
+            transform: translateY(0);
+        }
+        
+        .upgrade-button:disabled {
+            background: #555;
+            color: #aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Анимация клика */
+        .click-animation {
+            position: absolute;
+            pointer-events: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF8C00;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+            animation: floatUp 1s ease-out forwards;
+            z-index: 10;
+        }
+        
+        .critical-animation {
+            color: #FF0000;
+            font-size: 28px;
+            animation: floatUpCritical 1s ease-out forwards;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) scale(1.5);
+            }
+        }
+        
+        @keyframes floatUpCritical {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-40px) scale(1.8);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) scale(2);
+            }
+        }
+        
+        /* Новые элементы */
+        .achievements {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .achievement {
+            background: #2a2a2a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            border: 2px solid #444;
+        }
+        
+        .achievement:hover {
+            transform: scale(1.1);
+            border-color: #FFA500;
+        }
+        
+        .achievement.active {
+            border-color: #FFD700;
+            background: #3a3a3a;
+        }
+        
+        .achievement i {
+            font-size: 18px;
+            color: #aaa;
+        }
+        
+        .achievement.active i {
+            color: #FFD700;
+        }
+        
+        .achievement-tooltip {
+            position: absolute;
+            bottom: 50px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+        
+        .achievement:hover .achievement-tooltip {
+            opacity: 1;
+        }
+        
+        .combo-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 140, 0, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .combo-counter.show {
+            opacity: 1;
+        }
+        
+        /* Энергия - теперь видимая */
+        .energy-bar {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .energy-icon {
+            font-size: 20px;
+            color: #00a8ff;
+            margin-right: 10px;
+        }
+        
+        .energy-info {
+            flex-grow: 1;
+        }
+        
+        .energy-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .energy-progress {
+            height: 8px;
+            background-color: #1a1a1a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0097e6, #00a8ff);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Пассивный доход */
+        .passive-income {
+            background: rgba(255, 165, 0, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #FFA500;
+            border: 1px dashed #FFA500;
+            animation: pulsePassive 3s infinite;
+        }
+        
+        @keyframes pulsePassive {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 168, 255, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s ease;
+            z-index: 100;
+            max-width: 250px;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: rgba(46, 204, 113, 0.9);
+        }
+        
+        .notification.warning {
+            background: rgba(241, 196, 15, 0.9);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        /* Статистика */
+        .stats-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .stats-button:hover {
+            color: #FFA500;
+        }
+        
+        .stats-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .stats-modal.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .stats-content {
+            background: #2a2a2a;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .stats-content h2 {
+            color: #FFA500;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #444;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .click-area {
+                padding: 30px 15px;
+                min-height: 180px;
+            }
+            
+            .coin-icon {
+                font-size: 60px;
+            }
+            
+            .coin-count {
+                font-size: 32px;
+            }
+            
+            .achievements {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="stats-button" id="stats-button">
+            <i class="fas fa-chart-bar"></i>
+        </button>
+        
+        <div class="header">
+            <h1>Hamster Kombat Copy</h1>
+            <div class="url">robertsergeev.github.io/hamster-kombat-copy</div>
+        </div>
+        
+        <!-- Панель энергии -->
+        <div class="energy-bar">
+            <div class="energy-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div class="energy-info">
+                <div class="energy-text">
+                    <span>Энергия</span>
+                    <span><span id="current-energy">1000</span>/1000</span>
+                </div>
+                <div class="energy-progress">
+                    <div class="energy-fill" id="energy-fill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-row">
+                <div class="stat-label">Прибыль за тап</div>
+                <div class="stat-value">+<span id="profit-per-tap">1</span></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">Монет для апа</div>
+                <div class="stat-value"><span id="upgrade-cost">1000</span></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">Прибыль в час</div>
+                <div class="stat-value">+<span id="profit-per-hour">3600</span></div>
+            </div>
+        </div>
+        
+        <div class="click-area" id="click-area">
+            <div class="combo-counter" id="combo-counter">Комбо: 0</div>
+            <div class="coin-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="coin-count" id="coin-count">0</div>
+            <div class="click-profit">+<span id="click-profit-value">1</span> за клик</div>
+        </div>
+        
+        <!-- Ачивки -->
+        <div class="achievements">
+            <div class="achievement" id="achieve-100">
+                <i class="fas fa-trophy"></i>
+                <div class="achievement-tooltip">Первые 100 монет!</div>
+            </div>
+            <div class="achievement" id="achieve-1000">
+                <i class="fas fa-medal"></i>
+                <div class="achievement-tooltip">1000 монет!</div>
+            </div>
+            <div class="achievement" id="achieve-taps">
+                <i class="fas fa-mouse"></i>
+                <div class="achievement-tooltip">100 кликов!</div>
+            </div>
+            <div class="achievement" id="achieve-upgrades">
+                <i class="fas fa-level-up-alt"></i>
+                <div class="achievement-tooltip">5 улучшений!</div>
+            </div>
+        </div>
+        
+        <div class="upgrade-section">
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span id="current-progress">0</span>/<span id="max-progress">1000</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <button class="upgrade-button" id="upgrade-button">Upgrade</button>
+        </div>
+        
+        <!-- Пассивный доход -->
+        <div class="passive-income" id="passive-income">
+            Пассивный доход: +<span id="passive-income-value">1</span> монет/сек
+        </div>
+        
+        <footer>
+            Точная копия интерфейса Hamster Kombat с анимацией кликов
+        </footer>
+    </div>
+    
+    <!-- Модальное окно статистики -->
+    <div class="stats-modal" id="stats-modal">
+        <div class="stats-content">
+            <h2>Статистика</h2>
+            <div class="stat-item">
+                <span>Всего кликов:</span>
+                <span id="total-clicks">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Всего монет собрано:</span>
+                <span id="total-coins-earned">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Куплено улучшений:</span>
+                <span id="upgrades-bought">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Максимальное комбо:</span>
+                <span id="max-combo">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Время игры:</span>
+                <span id="play-time">0 сек</span>
+            </div>
+            <div class="stat-item">
+                <span>Критических ударов:</span>
+                <span id="critical-hits">0</span>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="upgrade-button" id="close-stats" style="width: auto; padding: 10px 20px;">Закрыть</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Система сохранения данных
+        const SAVE_KEY = 'hamster_kombat_save';
+        
+        // Функция сохранения данных
+        function saveGame() {
+            const gameData = {
+                coins: coins,
+                profitPerTap: profitPerTap,
+                profitPerHour: profitPerHour,
+                upgradeCost: upgradeCost,
+                energy: currentEnergy,
+                lastSaveTime: Date.now(),
+                totalClicks: totalClicks,
+                totalCoinsEarned: totalCoinsEarned,
+                upgradesBought: upgradesBought,
+                maxCombo: maxCombo,
+                playTime: playTime,
+                criticalHits: criticalHits,
+                achievements: achievements
+            };
+            
+            localStorage.setItem(SAVE_KEY, JSON.stringify(gameData));
+            
+            showNotification('Прогресс сохранен!', 'success');
+        }
+        
+        // Функция загрузки данных
+        function loadGame() {
+            const savedData = localStorage.getItem(SAVE_KEY);
+            
+            if (savedData) {
+                const gameData = JSON.parse(savedData);
+                
+                // Восстанавливаем данные
+                coins = gameData.coins || 0;
+                profitPerTap = gameData.profitPerTap || 1;
+                profitPerHour = gameData.profitPerHour || 3600;
+                upgradeCost = gameData.upgradeCost || 1000;
+                currentEnergy = gameData.energy || MAX_ENERGY;
+                
+                // Восстанавливаем статистику
+                totalClicks = gameData.totalClicks || 0;
+                totalCoinsEarned = gameData.totalCoinsEarned || 0;
+                upgradesBought = gameData.upgradesBought || 0;
+                maxCombo = gameData.maxCombo || 0;
+                playTime = gameData.playTime || 0;
+                criticalHits = gameData.criticalHits || 0;
+                achievements = gameData.achievements || {
+                    first100: false,
+                    first1000: false,
+                    taps100: false,
+                    upgrades5: false
+                };
+                
+                // Рассчитываем восстановление энергии за время отсутствия
+                if (gameData.lastSaveTime) {
+                    const timePassed = Math.floor((Date.now() - gameData.lastSaveTime) / 1000);
+                    const energyToRegen = Math.floor(timePassed * ENERGY_REGEN_RATE);
+                    
+                    currentEnergy = Math.min(MAX_ENERGY, currentEnergy + energyToRegen);
+                    playTime += timePassed; // Добавляем время отсутствия
+                }
+                
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Инициализация переменных
+        let coins = 0;
+        let profitPerTap = 1;
+        let profitPerHour = 3600;
+        let upgradeCost = 1000;
+        
+        // Система энергии
+        const MAX_ENERGY = 1000;
+        const ENERGY_REGEN_RATE = 1; // 1 энергия в секунду
+        let currentEnergy = MAX_ENERGY;
+        let lastEnergyUpdate = Date.now();
+        
+        // Статистика
+        let totalClicks = 0;
+        let totalCoinsEarned = 0;
+        let upgradesBought = 0;
+        let playTime = 0;
+        
+        // Комбо система
+        let comboCount = 0;
+        let comboTimeout = null;
+        const COMBO_DURATION = 2000; // 2 секунды для комбо
+        let maxCombo = 0;
+        
+        // Критические удары
+        const CRITICAL_CHANCE = 0.1; // 10% шанс
+        const CRITICAL_MULTIPLIER = 3; // 3x урон
+        let criticalHits = 0;
+        
+        // Ачивки
+        let achievements = {
+            first100: false,
+            first1000: false,
+            taps100: false,
+            upgrades5: false
+        };
+        
+        // Таймер для отслеживания времени игры
+        let playTimer = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Пытаемся загрузить сохраненную игру
+            const hasSave = loadGame();
+            
+            // Получение элементов DOM
+            const coinCountElement = document.getElementById('coin-count');
+            const profitPerTapElement = document.getElementById('profit-per-tap');
+            const profitPerHourElement = document.getElementById('profit-per-hour');
+            const upgradeCostElement = document.getElementById('upgrade-cost');
+            const clickProfitValueElement = document.getElementById('click-profit-value');
+            const currentProgressElement = document.getElementById('current-progress');
+            const maxProgressElement = document.getElementById('max-progress');
+            const progressFillElement = document.getElementById('progress-fill');
+            const upgradeButton = document.getElementById('upgrade-button');
+            const clickArea = document.getElementById('click-area');
+            const currentEnergyElement = document.getElementById('current-energy');
+            const energyFillElement = document.getElementById('energy-fill');
+            const comboCounter = document.getElementById('combo-counter');
+            const passiveIncomeElement = document.getElementById('passive-income-value');
+            const passiveIncomeContainer = document.getElementById('passive-income');
+            
+            // Статистика
+            const statsButton = document.getElementById('stats-button');
+            const statsModal = document.getElementById('stats-modal');
+            const closeStats = document.getElementById('close-stats');
+            
+            // Ачивки
+            const achieve100 = document.getElementById('achieve-100');
+            const achieve1000 = document.getElementById('achieve-1000');
+            const achieveTaps = document.getElementById('achieve-taps');
+            const achieveUpgrades = document.getElementById('achieve-upgrades');
+            
+            // Функция показа уведомления
+            function showNotification(text, type = '') {
+                const notification = document.getElementById('notification');
+                notification.textContent = text;
+                notification.className = 'notification';
+                if (type) notification.classList.add(type);
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 2000);
+            }
+            
+            // Обновление интерфейса
+            function updateUI() {
+                // Обновляем основной баланс
+                coinCountElement.textContent = coins;
+                profitPerTapElement.textContent = profitPerTap;
+                profitPerHourElement.textContent = profitPerHour;
+                upgradeCostElement.textContent = upgradeCost;
+                clickProfitValueElement.textContent = profitPerTap;
+                
+                // Обновляем прогресс бар
+                currentProgressElement.textContent = coins;
+                maxProgressElement.textContent = upgradeCost;
+                const progressPercent = Math.min(100, (coins / upgradeCost) * 100);
+                progressFillElement.style.width = `${progressPercent}%`;
+                
+                // Обновление энергии
+                currentEnergyElement.textContent = currentEnergy;
+                const energyPercent = (currentEnergy / MAX_ENERGY) * 100;
+                energyFillElement.style.width = `${energyPercent}%`;
+                
+                // Пассивный доход
+                const passiveIncome = Math.floor(profitPerHour / 3600);
+                passiveIncomeElement.textContent = passiveIncome;
+                
+                // Проверка, достаточно ли монет для улучшения
+                upgradeButton.disabled = coins < upgradeCost;
+                
+                // Обновляем ачивки
+                updateAchievements();
+            }
+            
+            // Обновление ачивок
+            function updateAchievements() {
+                if (coins >= 100 && !achievements.first100) {
+                    achievements.first100 = true;
+                    achieve100.classList.add('active');
+                    showNotification('Достижение: Первые 100 монет!', 'success');
+                }
+                
+                if (coins >= 1000 && !achievements.first1000) {
+                    achievements.first1000 = true;
+                    achieve1000.classList.add('active');
+                    showNotification('Достижение: 1000 монет!', 'success');
+                }
+                
+                if (totalClicks >= 100 && !achievements.taps100) {
+                    achievements.taps100 = true;
+                    achieveTaps.classList.add('active');
+                    showNotification('Достижение: 100 кликов!', 'success');
+                }
+                
+                if (upgradesBought >= 5 && !achievements.upgrades5) {
+                    achievements.upgrades5 = true;
+                    achieveUpgrades.classList.add('active');
+                    showNotification('Достижение: 5 улучшений!', 'success');
+                }
+            }
+            
+            // Функция восстановления энергии
+            function regenerateEnergy() {
+                const now = Date.now();
+                const timePassed = (now - lastEnergyUpdate) / 1000;
+                
+                if (timePassed >= 1) {
+                    const energyToAdd = Math.floor(timePassed * ENERGY_REGEN_RATE);
+                    currentEnergy = Math.min(MAX_ENERGY, currentEnergy + energyToAdd);
+                    lastEnergyUpdate = now;
+                    
+                    updateUI();
+                }
+                
+                requestAnimationFrame(regenerateEnergy);
+            }
+            
+            // Система комбо
+            function startCombo() {
+                comboCount++;
+                
+                // Обновляем счетчик комбо
+                comboCounter.textContent = `Комбо: ${comboCount}x`;
+                comboCounter.classList.add('show');
+                
+                // Сбрасываем таймер комбо
+                if (comboTimeout) clearTimeout(comboTimeout);
+                
+                comboTimeout = setTimeout(() => {
+                    comboCounter.classList.remove('show');
+                    if (comboCount > maxCombo) {
+                        maxCombo = comboCount;
+                    }
+                    comboCount = 0;
+                }, COMBO_DURATION);
+            }
+            
+            // Обработка клика
+            clickArea.addEventListener('click', function(e) {
+                // Проверяем, есть ли энергия
+                if (currentEnergy <= 0) {
+                    showNotification('Недостаточно энергии!', 'warning');
+                    clickArea.style.boxShadow = "0 5px 15px rgba(255, 71, 87, 0.5)";
+                    setTimeout(() => {
+                        clickArea.style.boxShadow = "0 5px 15px rgba(0, 0, 0, 0.5)";
+                    }, 300);
+                    return;
+                }
+                
+                // Тратим энергию
+                currentEnergy = Math.max(0, currentEnergy - 1);
+                
+                // Проверяем на критический удар
+                let isCritical = Math.random() < CRITICAL_CHANCE;
+                let coinsEarned = profitPerTap;
+                
+                if (isCritical) {
+                    coinsEarned *= CRITICAL_MULTIPLIER;
+                    criticalHits++;
+                    clickArea.classList.add('critical');
+                    setTimeout(() => {
+                        clickArea.classList.remove('critical');
+                    }, 500);
+                }
+                
+                // Добавляем монеты
+                coins += coinsEarned;
+                totalCoinsEarned += coinsEarned;
+                totalClicks++;
+                
+                // Запускаем комбо
+                startCombo();
+                
+                // Создание анимации клика
+                const clickAnimation = document.createElement('div');
+                clickAnimation.classList.add('click-animation');
+                if (isCritical) {
+                    clickAnimation.classList.add('critical-animation');
+                    clickAnimation.textContent = `КРИТ! +${coinsEarned}`;
+                } else {
+                    clickAnimation.textContent = `+${coinsEarned}`;
+                }
+                
+                // Позиционирование анимации
+                const rect = clickArea.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                clickAnimation.style.left = `${x}px`;
+                clickAnimation.style.top = `${y}px`;
+                
+                clickArea.appendChild(clickAnimation);
+                
+                // Удаление анимации
+                setTimeout(() => {
+                    clickAnimation.remove();
+                }, 1000);
+                
+                // Обновление интерфейса
+                updateUI();
+                
+                // Сохраняем
+                saveGame();
+            });
+            
+            // Обработка улучшения
+            upgradeButton.addEventListener('click', function() {
+                if (coins >= upgradeCost) {
+                    // Вычитаем стоимость улучшения
+                    coins -= upgradeCost;
+                    
+                    // Увеличиваем прибыль за тап
+                    profitPerTap += 1;
+                    
+                    // Увеличиваем прибыль в час
+                    profitPerHour += 100;
+                    
+                    // Увеличиваем стоимость следующего улучшения
+                    upgradeCost = Math.floor(upgradeCost * 1.5);
+                    
+                    // Увеличиваем счетчик улучшений
+                    upgradesBought++;
+                    
+                    // Обновляем интерфейс
+                    updateUI();
+                    
+                    // Анимация кнопки
+                    upgradeButton.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        upgradeButton.style.transform = 'scale(1)';
+                    }, 150);
+                    
+                    // Уведомление
+                    showNotification('Улучшение куплено!', 'success');
+                    
+                    // Сохраняем
+                    saveGame();
+                }
+            });
+            
+            // Пассивный доход
+            setInterval(() => {
+                coins += Math.floor(profitPerHour / 3600);
+                totalCoinsEarned += Math.floor(profitPerHour / 3600);
+                updateUI();
+            }, 1000);
+            
+            // Таймер игры
+            playTimer = setInterval(() => {
+                playTime++;
+            }, 1000);
+            
+            // Авто-сохранение
+            setInterval(() => {
+                saveGame();
+            }, 30000);
+            
+            // Статистика
+            statsButton.addEventListener('click', function() {
+                // Заполняем статистику
+                document.getElementById('total-clicks').textContent = totalClicks;
+                document.getElementById('total-coins-earned').textContent = totalCoinsEarned;
+                document.getElementById('upgrades-bought').textContent = upgradesBought;
+                document.getElementById('max-combo').textContent = maxCombo;
+                document.getElementById('play-time').textContent = formatTime(playTime);
+                document.getElementById('critical-hits').textContent = criticalHits;
+                
+                statsModal.classList.add('show');
+            });
+            
+            closeStats.addEventListener('click', function() {
+                statsModal.classList.remove('show');
+            });
+            
+            statsModal.addEventListener('click', function(e) {
+                if (e.target === statsModal) {
+                    statsModal.classList.remove('show');
+                }
+            });
+            
+            // Форматирование времени
+            function formatTime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                
+                if (hours > 0) {
+                    return `${hours}ч ${minutes}м ${secs}с`;
+                } else if (minutes > 0) {
+                    return `${minutes}м ${secs}с`;
+                } else {
+                    return `${secs}с`;
+                }
+            }
+            
+            // Запускаем восстановление энергии
+            regenerateEnergy();
+            
+            // Сохраняем при закрытии
+            window.addEventListener('beforeunload', saveGame);
+            
+            // Инициализация интерфейса
+            updateUI();
+            
+            // Показываем сообщение о загрузке сохранения
+            if (hasSave) {
+                showNotification('Прогресс загружен!', 'success');
+            }
+            
+            // Запускаем фоновые обновления
+            setInterval(updateUI, 1000);
+        });
+    </script>
+</body>
+  </html>
